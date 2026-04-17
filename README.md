@@ -1,173 +1,143 @@
 # Decision Simulator
 
-Claude Code is often good at writing code and bad at choosing the right path.
+Decision Simulator is a decision-quality layer for Claude Code.
 
-It can:
+It improves the part of agentic coding that breaks most often: judgment.
 
-- introduce an abstraction because it feels cleaner
-- turn a local fix into a cross-cutting refactor
-- choose a library that looks proper but adds long-term drag
-- move logic across boundaries without enough payoff
-- give you balanced pros and cons when one option is clearly better
+Claude can usually produce code. The harder problem is choosing the right path before it writes the code, and correcting itself when the path starts looking wrong halfway through.
 
-`decision-simulator` is a Claude Code plugin for that exact failure mode.
+That is what this plugin is for.
 
-It improves Claude's judgment at decision points:
+It helps Claude make better calls about:
 
-- when you ask, "Should I do X or Y?"
-- when Claude itself reaches a crossroads during planning or implementation
-- when a valid solution is not the same thing as the right solution
+- whether a refactor is justified or just tempting
+- whether logic should stay local or move into a shared abstraction
+- whether a dependency is actually worth adopting
+- whether a bug should be patched, reworked at the boundary, or fixed more deeply
+- whether an architecture decision is buying leverage or just buying complexity
+- what information is still missing before a decision should be trusted
 
-## Install
+The goal is not to take over the workflow. The goal is to improve the decisions made inside the workflow you already use.
 
-Install directly from GitHub through Claude Code:
+## How It Works
 
-```text
-/plugin marketplace add echoo19/decision-simulator
-/plugin install decision-simulator@decision-simulator
-```
+Decision Simulator activates when Claude hits a real decision point.
 
-Or test it locally from the repo root:
+Sometimes that comes from the user:
 
-```bash
-claude --plugin-dir ./plugins/decision-simulator
-```
+- "Should I use X or Y?"
+- "Should I refactor this now or leave it alone?"
+- "Should this live in the frontend or backend?"
 
-## Why This Is Useful
+Sometimes it comes from Claude's own internal reasoning:
 
-Most agent mistakes are not syntax mistakes. They are judgment mistakes.
+- it is about to introduce a shared abstraction
+- it is drifting from a local fix into a broader rewrite
+- it has found multiple plausible implementation paths
+- it is making a choice with low reversibility or hidden long-term cost
 
-Claude can write code that works and still choose a path that is:
+When that happens, the plugin pushes Claude to slow down and do better work.
 
-- harder to debug
-- harder to roll back
-- harder for the team to own
-- overbuilt for the real problem
-- cheap this hour and expensive next month
+Instead of jumping straight into the first plausible path, it is prompted to:
 
-This plugin makes Claude more likely to stop and ask:
+- define the actual decision
+- restate the goal
+- identify meaningful constraints
+- compare realistic options, including leaving things alone
+- surface second-order effects and hidden costs
+- identify missing context and uncertainty
+- make a grounded recommendation with confidence
 
-- Is this refactor actually worth it?
-- Is this the right boundary or just a tidy-looking one?
-- Should this stay local instead of becoming shared infrastructure?
-- Is the next step reversible if we learn we were wrong?
-- What hidden cost shows up after merge, rollout, or maintenance?
+That changes the shape of Claude's behavior in practice.
 
-That is the value. It helps Claude pick the boring-right path more often.
+Without a decision-quality layer, Claude often does one of four things:
 
-## What Changes With The Plugin
+- follows momentum into the first workable approach
+- overvalues clean abstractions too early
+- gives symmetrical pros and cons when one option is obviously stronger
+- says "it depends" without saying what it depends on
 
-Without a decision-quality layer, Claude often follows momentum:
+With Decision Simulator, Claude becomes more likely to pick the boring-right path instead of the clever-wrong one.
 
-- first plausible solution wins
-- "clean architecture" gets overrated
-- local fixes become shared abstractions too early
-- tradeoff analysis becomes generic and non-committal
+## Where You Feel The Difference
 
-With Decision Simulator active, Claude is pushed to:
+### During planning
 
-- define the actual decision before solving the wrong problem
-- compare realistic options, including leaving the code alone
-- choose the few dimensions that matter instead of dumping every possible factor
-- surface second-order effects like migration burden, rule drift, monitoring cost, and ownership confusion
-- state when one option clearly dominates
-- say what missing information could still flip the answer
-- make a recommendation with confidence instead of hiding behind "it depends"
+Claude gets better at deciding the shape of the work before implementation starts.
 
-## Where You Will Feel It
+- Should this be a targeted fix or a real refactor?
+- Is a new service, module, or abstraction warranted yet?
+- Which unknowns matter enough to answer before starting?
 
-### Planning
+### During implementation
 
-Claude gets better at deciding the shape of the work before it starts.
-
-- Should this be a targeted patch or a real refactor?
-- Is a new shared module justified yet?
-- Is this architecture buying leverage or just complexity?
-- Which unknowns matter enough to answer before implementation?
-
-### Implementation
-
-Claude gets better at course-correcting while already in the task.
+Claude gets better at correcting itself while already in the work.
 
 - Should this logic stay local or move into a shared layer?
-- Is the current approach still the best one, now that the codebase context is clearer?
-- Is this abstraction paying for itself, or am I about to create cleanup debt?
-- Should I keep building on this path or back up and choose a simpler one?
+- Is the current path still the best option now that the codebase context is clearer?
+- Is this abstraction paying for itself, or just creating cleanup debt?
 
-### Debugging
+### During debugging
 
-Claude gets better at choosing between a symptom patch and a durable fix.
+Claude gets better at choosing between symptom patches and durable fixes.
 
 - Is this a local bug or a boundary problem?
 - Is the real fix worth the scope increase right now?
 - What is the lowest-risk fix that does not create recurring debt?
 
-### Review And Self-Correction
+### During review or self-correction
 
 Claude gets better at challenging its own preferred answer.
 
 - What is the strongest argument against the current path?
 - Which assumption is doing too much work?
-- What looks elegant right now but will be painful after rollout?
+- What cost only shows up after merge, rollout, or maintenance?
 
-## Concrete Examples
+## Why This Is Useful
 
-This plugin is meant for decisions like:
+A lot of failed agentic work is not failed because the model cannot write code.
 
-- "Should this validation live in the frontend or the backend?"
-- "Should I refactor this now or leave it alone?"
-- "Should I introduce TanStack Query here or is that overkill?"
-- "Should this become a new service or stay in the monolith?"
-- "Should I patch the bug locally or move the logic into a shared module?"
-- "What am I missing before I commit to this architecture?"
-- "Before you keep going, check whether this abstraction is actually worth introducing."
+It fails because the model chooses a technically valid path that is still the wrong call for the project.
 
-## What It Actually Improves In Claude Code
+That usually looks like:
 
-This is not a workflow takeover plugin.
+- code that works but is harder to debug
+- abstractions that are tidy but premature
+- architecture that is impressive but unnecessary
+- fixes that solve the immediate issue while creating future drag
+- tradeoff analysis that sounds thoughtful but is not actually useful
 
-It does not try to become your planner, reviewer, or orchestrator. It acts as a judgment layer inside the workflow you already use.
+Decision Simulator is built for exactly that failure mode.
 
-That means it works well for:
+It does not try to make Claude more verbose. It tries to make Claude more convincing, more skeptical of weak ideas, and more useful when a technical decision actually matters.
 
-- casual Claude Code users who just want better answers to technical tradeoff questions
-- people using Claude interactively while coding and debugging
-- agentic workflows where Claude needs to decide its own next move
-- structured setups like Superpowers, where it can improve the quality of decisions made inside brainstorming, planning, implementation, and review
+## Installation
 
-In practice:
+Decision Simulator is not in the official Anthropic marketplace yet.
 
-- a planning plugin can structure the work
-- Decision Simulator can improve the choices made inside that structure
+For now, install it from GitHub through Claude Code.
 
-## Included In The Plugin
+### Claude Code
 
-The plugin ships with:
+In Claude Code, add the GitHub repo as a marketplace:
 
-- `decision-simulator`
-  The flagship skill for high-signal decision analysis
-- `evaluate-tradeoffs`
-  Compares options across the dimensions that actually matter
-- `detect-context-gaps`
-  Finds the missing information that could flip the answer
-- `compare-implementation-paths`
-  Compares practical technical approaches to the same goal
-- `decision-reviewer`
-  A lightweight subagent for deeper decision analysis when Claude needs a stronger recommendation
+```text
+/plugin marketplace add echoo19/decision-simulator
+```
 
-## Quick Example
+Then install the plugin:
 
-Instead of:
+```text
+/plugin install decision-simulator@decision-simulator
+```
 
-> Both approaches have tradeoffs. Backend validation is more secure, but frontend validation is faster and simpler. It depends on your needs.
+If Claude Code is already running, reload plugins:
 
-The plugin pushes Claude toward something closer to:
+```text
+/reload-plugins
+```
 
-> Keep lightweight client checks for UX, but move authoritative validation to the backend. Frontend-only validation is faster this week, but it duplicates rules, weakens guarantees, and creates debugging drift once multiple clients exist. The real cost is not the validation logic itself; it is rule divergence over time.
-
-That is the difference: less generic balance, more usable judgment.
-
-## Local Usage
+### Local testing
 
 From the repository root:
 
@@ -175,11 +145,84 @@ From the repository root:
 claude --plugin-dir ./plugins/decision-simulator
 ```
 
-Then inside Claude Code:
+Then try it with:
 
 ```text
-/reload-plugins
 /decision-simulator:decision-simulator Should I split this service now or wait?
+```
+
+## What’s Inside
+
+Decision Simulator includes one main skill, three supporting skills, and one lightweight agent.
+
+### Main skill
+
+- `decision-simulator`
+  The flagship decision-analysis skill. It defines the decision, clarifies the goal, compares realistic options, identifies constraints, surfaces hidden costs, and makes a recommendation with confidence.
+
+### Supporting skills
+
+- `evaluate-tradeoffs`
+  Compares options across the dimensions that actually matter in context.
+
+- `detect-context-gaps`
+  Finds the missing information and assumptions that could flip the answer.
+
+- `compare-implementation-paths`
+  Compares practical approaches to the same goal and explains when each path is better.
+
+### Agent
+
+- `decision-reviewer`
+  A lightweight subagent for deeper technical decision analysis when Claude needs a stronger recommendation or wants to pressure-test its own next move.
+
+## Example Prompts
+
+- "Should I keep this validation in the frontend or move it to the backend?"
+- "Should I refactor this now or leave it alone?"
+- "Should I adopt TanStack Query here or is that overkill?"
+- "Compare an incremental refactor versus a rewrite for this auth flow."
+- "Before you keep going, check whether this abstraction is actually worth introducing."
+- "You are deciding between patching this locally or moving it into a shared module. Compare those paths first."
+- "What am I missing before I commit to this architecture?"
+
+## A Simple Before / After
+
+Without a decision-quality layer, Claude often says something like:
+
+> Both approaches have tradeoffs. Backend validation is more secure, while frontend validation is faster and simpler. It depends on your needs.
+
+With Decision Simulator, the answer is pushed toward something more like:
+
+> Keep lightweight client checks for UX, but move authoritative validation to the backend. Frontend-only validation is faster this week, but it duplicates rules, weakens guarantees, and creates debugging drift once multiple clients exist. The real cost is not the validation logic itself; it is rule divergence over time.
+
+That is the point of the plugin: less generic balance, more usable judgment.
+
+## Compatibility
+
+Decision Simulator is designed to be composable.
+
+It does not install hooks, take over planning mode, or assume it is the only plugin active.
+
+It is intended to work well:
+
+- for normal Claude Code use
+- for casual interactive coding sessions
+- for more agentic workflows where Claude is making its own next-step decisions
+- alongside plugins like Superpowers that structure the workflow but still benefit from better decision quality inside each step
+
+## Validation
+
+Validate the marketplace manifest:
+
+```bash
+claude plugin validate ./.claude-plugin/marketplace.json
+```
+
+Validate the plugin:
+
+```bash
+claude plugin validate ./plugins/decision-simulator
 ```
 
 ## Repository Structure
@@ -205,32 +248,86 @@ decision-simulator/
         decision-reviewer.md
       README.md
   README.md
+  PRIVACY.md
   .gitignore
   LICENSE
 ```
 
-## Validation
+## Contributing
+
+Contributions are welcome, but this plugin should stay narrow.
+
+Decision Simulator is not meant to become a general workflow framework or a grab bag of prompts. Good contributions usually make the plugin better at technical judgment without making it noisier, broader, or more controlling.
+
+Good contribution areas:
+
+- sharper tradeoff analysis
+- better examples and README improvements
+- better detection of missing context and weak assumptions
+- clearer interoperability with Claude Code workflows and other plugins
+- fixes to skill triggering, wording, or recommendation quality
+
+Less likely to be a fit:
+
+- mandatory workflow control
+- hooks that try to take over Claude Code globally
+- broad expansions unrelated to technical decision quality
+- remote services, telemetry, or data collection behavior
+
+### Suggested process
+
+1. Open an issue first if the change is non-trivial.
+2. Describe the concrete failure mode you want to improve.
+3. Keep the scope focused on better decisions, not more process.
+4. Test the plugin locally before opening a PR.
+5. Submit a pull request with a short explanation of what changed and why.
+
+### Local contributor workflow
+
+Clone the repository and run the plugin locally:
+
+```bash
+claude --plugin-dir ./plugins/decision-simulator
+```
+
+Validate before opening a PR:
 
 ```bash
 claude plugin validate ./.claude-plugin/marketplace.json
 claude plugin validate ./plugins/decision-simulator
 ```
 
+Useful contributor checks:
+
+- try at least one explicit user decision prompt
+- try at least one mid-task "Claude is about to choose a path" prompt
+- make sure the plugin still feels composable and does not take over the workflow
+- make sure examples and docs match actual behavior
+
+### PR guidance
+
+Good pull requests usually include:
+
+- the problem being fixed
+- the exact behavior change
+- one or two example prompts that show the improvement
+- any documentation updates needed to keep the repo accurate
+
 ## Limitations
 
 - It improves judgment, not factual access. Missing business context or production data can still change the answer.
-- It does not replace measurement, experiments, or rollout evidence.
+- It does not replace experiments, measurements, or rollout evidence.
 - It does not manage execution after the decision is made.
 
-## If You Like This
+## If This Helps
 
 Use it on a real decision point, not a toy prompt.
 
 The best tests are places where Claude is tempted to overbuild:
 
-- a refactor you are not sure is worth it
+- a refactor that might not be worth it
 - a shared abstraction that might be premature
-- a library decision with hidden long-term cost
+- a library choice with hidden long-term cost
 - a patch-vs-rewrite-vs-boundary-change call
 
 If it saves you from one expensive wrong turn, it has already paid for itself.
