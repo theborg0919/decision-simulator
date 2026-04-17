@@ -27,6 +27,75 @@ This plugin is designed to raise the signal level. It helps Claude:
 
 This applies both to explicit user questions and to Claude's own internal crossroads while it is reasoning through work.
 
+## How It Changes Claude's Behavior
+
+This plugin is meant to change behavior, not just output formatting.
+
+With it active, Claude should be more likely to:
+
+- explicitly define the decision before solving the wrong problem
+- compare the current path against realistic alternatives, including leaving the code alone
+- name which factors are actually decisive instead of dumping every possible consideration
+- surface second-order effects like migration burden, rule drift, debugging complexity, or ownership confusion
+- catch low-reversibility moves before committing to them
+- make a recommendation with confidence, instead of presenting fake balance
+
+That matters because many bad agentic outcomes come from reasonable-looking decisions made too quickly:
+
+- introducing an abstraction because duplication feels uncomfortable
+- splitting code across boundaries without enough payoff
+- selecting a library because it looks "proper" rather than because it solves the real constraint
+- expanding scope from a targeted fix into a refactor that the codebase did not actually need
+
+Decision Simulator is designed to interrupt that kind of weak momentum.
+
+## How It Helps In Claude Code Workflows
+
+### Planning
+
+It sharpens plan quality before implementation begins.
+
+- identifies whether the work is local or architectural
+- finds the missing constraints that could invalidate the plan
+- compares a minimal path against a heavier "proper" path
+
+### Implementation
+
+It helps Claude choose better execution paths while it is already in the work.
+
+- decide whether to patch locally or move logic into a shared layer
+- decide whether to keep the current approach or switch paths
+- decide whether a new abstraction is buying enough to justify its cost
+
+### Debugging
+
+It improves fix quality by separating symptom patches from durable fixes.
+
+- compare root-cause fixes versus containment patches
+- weigh time-to-recovery against long-term maintenance cost
+- call out when a "quick fix" is likely to create recurring incidents
+
+### Review And Self-Correction
+
+It helps Claude challenge its own preferred answer.
+
+- strongest argument against the current path
+- hidden operational cost after rollout
+- assumptions that need to be verified before confidence should be high
+
+## Why This Is Useful Alongside Other Plugins
+
+This plugin is a judgment layer, not a workflow layer.
+
+That is why it works well with tools like Superpowers. A planning plugin can structure the work; Decision Simulator improves the quality of the decisions made inside that structure.
+
+In practice, that means:
+
+- better brainstorming because weak options get pressure-tested earlier
+- better plans because the decisive tradeoffs are explicit
+- better implementation because Claude is less likely to overbuild
+- better reviews because the strongest counterarguments are surfaced before merge
+
 ## What Makes This Different
 
 Most AI decision support stays generic. This plugin is opinionated about quality, not process.

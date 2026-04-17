@@ -66,6 +66,79 @@ The quality bar is practical judgment:
 - explicit uncertainty and missing context
 - grounded recommendations rather than fake balance
 
+## How It Improves Claude Code
+
+This plugin is useful when Claude is no longer just retrieving facts or writing code mechanically. It is most useful when Claude has to choose.
+
+In practice, it improves Claude Code by making it more likely to:
+
+- stop and compare plausible paths before committing to a costly implementation
+- notice when a "clean" abstraction is actually premature and will create more cleanup than leverage
+- distinguish between a quick patch, a durable fix, and a rewrite that is not justified yet
+- identify where complexity lands after the change, not just whether the code looks nicer immediately
+- call out rollback difficulty, migration cost, monitoring burden, and team coordination overhead before those become surprises
+- make a recommendation with a stated confidence level instead of hiding behind vague balance
+
+That changes the character of Claude's output. Instead of:
+
+- listing interchangeable pros and cons
+- drifting into architecture theater
+- following momentum into the first plausible solution
+- saying "it depends" without explaining what flips the answer
+
+it becomes better at making and defending a specific call.
+
+## Where It Helps In Agentic Work
+
+The plugin is designed for agentic workflows, not just one-off Q&A.
+
+### During Planning
+
+It helps Claude pressure-test the shape of the plan before implementation starts.
+
+- Should this be a small local change or a cross-cutting refactor?
+- Is a new service, shared module, or abstraction actually warranted?
+- Which unknowns are important enough to answer before work starts?
+
+### During Implementation
+
+It helps Claude catch bad mid-stream decisions that often look reasonable in the moment.
+
+- extracting shared code too early
+- moving logic across boundaries without enough payoff
+- choosing the fastest path even when rollback is painful
+- introducing dependencies or infrastructure that are expensive to unwind
+
+### During Debugging
+
+It helps Claude decide whether to patch symptoms or fix the real source of the problem.
+
+- Is this a local bug or a boundary problem?
+- Is the proper fix worth the scope increase right now?
+- What is the lowest-risk fix that will not create recurring debt?
+
+### During Review Or Self-Correction
+
+It helps Claude challenge its own preferred path.
+
+- What is the strongest argument against the current approach?
+- Which assumption is carrying too much of the plan?
+- What hidden cost shows up after merge, rollout, or maintenance?
+
+## Why This Is Useful In Real Projects
+
+A lot of agentic coding failures are not syntax failures. They are judgment failures.
+
+The model can write correct code for the wrong approach. It can choose a technically valid implementation that is:
+
+- harder to debug
+- harder to roll back
+- harder for the team to own
+- overbuilt for the actual problem
+- cheap today but expensive over the next month
+
+Decision Simulator is aimed at that failure mode. It makes Claude more likely to pick the boring-right solution over the clever-wrong one.
+
 ## Installation
 
 ### Local testing with `--plugin-dir`
