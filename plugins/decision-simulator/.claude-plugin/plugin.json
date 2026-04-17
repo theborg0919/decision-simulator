@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "Decision-quality layer for Claude Code that improves user-facing answers and Claude's own technical choices with high-signal tradeoff analysis, context-gap detection, and grounded recommendations.",
   "author": {
-    "name": "Decision Simulator Contributors"
+    "name": "Hyunsoo Kang",
+    "email": "hyunsookang0919@gmail.com",
+    "url": "https://github.com/theborg0919"
   },
+  "homepage": "https://github.com/theborg0919/decision-simulator/tree/main/plugins/decision-simulator",
+  "repository": "https://github.com/theborg0919/decision-simulator",
   "license": "MIT",
   "keywords": [
     "decision-quality",

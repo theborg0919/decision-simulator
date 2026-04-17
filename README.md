@@ -1,6 +1,6 @@
 # Decision Simulator For Claude Code
 
-`decision-simulator-marketplace` is the GitHub repository for the `decision-simulator` Claude Code plugin.
+`decision-simulator` is the GitHub repository for the `decision-simulator` Claude Code plugin.
 
 The plugin acts as a decision-quality layer for Claude Code. It improves judgment in two places:
 
@@ -19,7 +19,7 @@ It is intentionally composable:
 ## Repository Contents
 
 ```text
-decision-simulator-marketplace/
+decision-simulator/
   .claude-plugin/
     marketplace.json
   plugins/
@@ -93,8 +93,8 @@ Then try:
 From a parent directory that contains this repository:
 
 ```text
-/plugin marketplace add ./decision-simulator-marketplace
-/plugin install decision-simulator@decision-simulator-marketplace
+/plugin marketplace add ./decision-simulator
+/plugin install decision-simulator@decision-simulator
 ```
 
 ### Install through Claude Code from GitHub
@@ -102,8 +102,8 @@ From a parent directory that contains this repository:
 After publishing the repository to GitHub:
 
 ```text
-/plugin marketplace add <github-owner>/decision-simulator-marketplace
-/plugin install decision-simulator@decision-simulator-marketplace
+/plugin marketplace add <github-owner>/decision-simulator
+/plugin install decision-simulator@decision-simulator
 ```
 
 ## Local Validation
@@ -129,7 +129,7 @@ claude plugin validate ./plugins/decision-simulator
 
 ## Publishing
 
-1. Create a new GitHub repository named `decision-simulator-marketplace`.
+1. Create a new GitHub repository named `decision-simulator`.
 2. Commit and push the repository.
 3. Add a tag or release when you want a stable public version.
 4. Share installation instructions using the GitHub `owner/repo` format so users can install the plugin through Claude Code.

@@ -132,13 +132,13 @@ Inside Claude Code:
 Local marketplace:
 
 ```text
-/plugin marketplace add ./decision-simulator-marketplace
-/plugin install decision-simulator@decision-simulator-marketplace
+/plugin marketplace add ./decision-simulator
+/plugin install decision-simulator@decision-simulator
 ```
 
 GitHub install:
 
 ```text
-/plugin marketplace add <github-owner>/decision-simulator-marketplace
-/plugin install decision-simulator@decision-simulator-marketplace
+/plugin marketplace add <github-owner>/decision-simulator
+/plugin install decision-simulator@decision-simulator
 ```

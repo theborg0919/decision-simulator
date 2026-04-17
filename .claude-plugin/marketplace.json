@@ -1,10 +1,11 @@
 {
-  "name": "decision-simulator-marketplace",
+  "name": "decision-simulator",
   "owner": {
-    "name": "Decision Simulator Contributors"
+    "name": "Hyunsoo Kang",
+    "email": "hyunsookang0919@gmail.com"
   },
   "metadata": {
-    "description": "Claude Code marketplace for a decision-quality plugin that improves technical tradeoff analysis without taking over workflow.",
+    "description": "Claude Code plugin catalog for Decision Simulator, a decision-quality layer that sharpens technical judgment without taking over workflow.",
     "version": "1.0.0"
   },
   "plugins": [
@@ -13,8 +14,10 @@
       "description": "Decision-quality layer for Claude Code that improves user-facing answers and Claude's own technical choices with sharper tradeoff analysis and grounded recommendations.",
       "version": "1.0.0",
       "author": {
-        "name": "Decision Simulator Contributors"
+        "name": "Hyunsoo Kang",
+        "email": "hyunsookang0919@gmail.com"
       },
+      "repository": "https://github.com/theborg0919/decision-simulator",
       "license": "MIT",
       "keywords": [
         "decision-making",
